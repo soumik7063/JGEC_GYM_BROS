@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 connectDB();
 const allowedOrigins = [
   'http://localhost:5173', 
-  'https://jgec-gym-bros.vercel.app/'
+  'https://jgec-gym-bros.vercel.app'
 ];
 
 app.use(cors({
