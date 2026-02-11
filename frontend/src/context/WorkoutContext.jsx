@@ -15,7 +15,6 @@ const WorkoutContext = ({children}) => {
     const [success,setSuccess] = useState(null);
    const [data , setdata] = useState(null);
    const getWorkouts = async()=>{
-    console.log("Fetching workouts for user:", user.user.id);
     try {
         setLoading(true);
         const res = await fetch(`${import.meta.env.VITE_API_URL}/getworkout`,{
