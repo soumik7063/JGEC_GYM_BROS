@@ -1,161 +1,171 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { workoutContext } from "../context/WorkoutContext";
-import { useContext } from "react";
 
-const workoutOptionsToindex ={
-    "Shoulder Press":1,
-    "Back":2,
-    "Biceps":3,
-    "Triceps":4,
-    "Chest":5,
-    "Legs":6,
-    "Abs":7,
-    "Cardio":8
-}
-
-const options = ["Shoulder Press", "Back", "Biceps", "Triceps", "Chest", "Legs", "Abs", "Cardio"];
-const date = new Date();
-
-const workoutEmojis = {
-    "Shoulder Press": "🏋️‍♂️",
-    "Back": "🔙",
-    "Biceps": "💪",
-    "Triceps": "🦾",
-    "Chest": "🫁",
-    "Legs": "🦵",
-    "Abs": "🔥",
-    "Cardio": "❤️"
+const workoutOptionsToindex = {
+  "Shoulder Press": 1,
+  Back: 2,
+  Biceps: 3,
+  Triceps: 4,
+  Chest: 5,
+  Legs: 6,
+  Abs: 7,
+  Cardio: 8,
 };
 
+const options = [
+  "Shoulder Press",
+  "Back",
+  "Biceps",
+  "Triceps",
+  "Chest",
+  "Legs",
+  "Abs",
+  "Cardio",
+];
+
+const workoutEmojis = {
+  "Shoulder Press": "🏋️‍♂️",
+  Back: "🔙",
+  Biceps: "💪",
+  Triceps: "🦾",
+  Chest: "🫁",
+  Legs: "🦵",
+  Abs: "🔥",
+  Cardio: "❤️",
+};
+
+const date = new Date();
+
 export default function CheckboxForm() {
-    const [selectedOptions, setSelectedOptions] = React.useState([]);
   const {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm();
-  const {handelWorkout,loading} = useContext(workoutContext);
-  
-  const onSubmit = (data) => {
-    if(data.selectedOptions.length>0){
-        const selectedIndexes = data.selectedOptions.map(opt=>workoutOptionsToindex[opt]);
-        setSelectedOptions(selectedIndexes);
-        handelWorkout({
-            date: date.toLocaleDateString(),
-            exercises: selectedIndexes
-        });
-    }else{
-        console.log("No options selected");
+
+  const { handelWorkout, loading } = useContext(workoutContext);
+
+  const selected = watch("selectedOptions") || [];
+
+  const toggleOption = (opt) => {
+    if (selected.includes(opt)) {
+      setValue(
+        "selectedOptions",
+        selected.filter((item) => item !== opt),
+      );
+    } else {
+      setValue("selectedOptions", [...selected, opt]);
     }
   };
 
-  const watchedOptions = watch("selectedOptions") || [];
+  const onSubmit = (data) => {
+    if (data.selectedOptions?.length > 0) {
+      const selectedIndexes = data.selectedOptions.map(
+        (opt) => workoutOptionsToindex[opt],
+      );
+
+      handelWorkout({
+        date: date.toLocaleDateString(),
+        exercises: selectedIndexes,
+      });
+    }
+  };
+
+  const progress = (selected.length / options.length) * 100;
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4">
-      <div className="w-full max-w-md">
-        <div
-          onSubmit={handleSubmit(onSubmit)}
-          className="bg-white p-8 rounded-2xl shadow-2xl border border-gray-100"
-        >
-          {/* Header Section */}
-          <div className="text-center mb-6">
-            <div className="text-5xl mb-3">🏋️‍♂️</div>
-            <h2 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-              Log Your Workout
+    <div className="min-h-screen bg-black flex items-center justify-center px-4 py-16 text-white">
+      <div className="w-full max-w-4xl">
+        {/* Main Card */}
+        <div className="bg-gradient-to-br from-black/60 via-zinc-900/60 to-black/60 border border-orange-500/20 rounded-3xl shadow-2xl p-8 md:p-12 backdrop-blur-md">
+          {/* Header */}
+          <div className="text-center mb-10">
+            <h2 className="text-4xl md:text-5xl font-extrabold">
+              Build Your <span className="text-orange-500">Workout</span>
             </h2>
-            <div className="flex items-center justify-center gap-2 bg-blue-50 px-4 py-2 rounded-full inline-block">
-              <span className="text-blue-600">📅</span>
-              <p className="text-lg font-semibold text-blue-600">
-                {date.toLocaleDateString()}
-              </p>
+
+            <p className="text-gray-400 mt-3">{date.toLocaleDateString()}</p>
+
+            {/* Progress Bar */}
+            <div className="mt-6 w-full bg-zinc-800 rounded-full h-3 overflow-hidden">
+              <div
+                className="h-full bg-orange-500 transition-all duration-500"
+                style={{ width: `${progress}%` }}
+              ></div>
             </div>
+
+            <p className="mt-2 text-sm text-gray-400">
+              {selected.length} / {options.length} selected
+            </p>
           </div>
 
-          {/* Selected Count Badge */}
-          {watchedOptions.length > 0 && (
-            <div className="mb-4 text-center">
-              <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-full text-sm font-semibold inline-block animate-pulse">
-                ✓ {watchedOptions.length} exercise{watchedOptions.length !== 1 ? 's' : ''} selected
-              </span>
-            </div>
-          )}
+          {/* Workout Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-10">
+            {options.map((opt, index) => {
+              const isSelected = selected.includes(opt);
 
-          {/* Checkbox Options */}
-          <div className="space-y-3 mb-6">
-            {options.map((opt, index) => (
-              <label
-                key={index}
-                className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:shadow-md ${
-                  watchedOptions.includes(opt)
-                    ? 'border-blue-500 bg-blue-50 shadow-md'
-                    : 'border-gray-200 bg-white hover:border-blue-300'
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  value={opt}
-                  {...register("selectedOptions", {
-                    validate: (value) =>
-                      value && value.length > 0 || "Select at least 1 option",
-                  })}
-                  className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500 mr-3"
-                />
-                <span className="text-2xl mr-3">{workoutEmojis[opt]}</span>
-                <span className={`text-lg font-medium ${
-                  watchedOptions.includes(opt) ? 'text-blue-700' : 'text-gray-700'
-                }`}>
-                  {opt}
-                </span>
-              </label>
-            ))}
+              return (
+                <div
+                  key={index}
+                  onClick={() => toggleOption(opt)}
+                  className={`cursor-pointer rounded-2xl p-6 text-center transition-all duration-300 border ${
+                    isSelected
+                      ? "bg-orange-500 text-black border-orange-500 scale-105 shadow-lg shadow-orange-500/30"
+                      : "bg-zinc-900 border-zinc-700 hover:border-orange-400 hover:scale-105"
+                  }`}
+                >
+                  <div className="text-4xl mb-3">{workoutEmojis[opt]}</div>
+
+                  <p className="font-semibold text-lg">{opt}</p>
+                </div>
+              );
+            })}
           </div>
 
-          {/* Error Message */}
+          {/* Hidden Checkboxes for Form */}
+          {options.map((opt, i) => (
+            <input
+              key={i}
+              type="checkbox"
+              value={opt}
+              {...register("selectedOptions", {
+                validate: (value) =>
+                  (value && value.length > 0) || "Select at least one workout",
+              })}
+              className="hidden"
+            />
+          ))}
+
+          {/* Error */}
           {errors.selectedOptions && (
-            <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-500 rounded">
-              <p className="text-red-600 text-sm font-medium flex items-center">
-                <span className="mr-2">⚠️</span>
-                {errors.selectedOptions.message}
-              </p>
-            </div>
+            <p className="text-red-400 text-center mb-6">
+              {errors.selectedOptions.message}
+            </p>
           )}
 
           {/* Submit Button */}
-          <button
-            onClick={handleSubmit(onSubmit)}
-            disabled={loading}
-            className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 ${
-              loading
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-1'
-            } text-white`}
-          >
-            {loading ? (
-              <span className="flex items-center justify-center">
-                <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Submitting...
-              </span>
-            ) : (
-              <span className="flex items-center justify-center">
-                <span className="mr-2">✓</span>
-                Submit Workout
-              </span>
-            )}
-          </button>
+          <div className="text-center">
+            <button
+              onClick={handleSubmit(onSubmit)}
+              disabled={loading}
+              className={`px-10 py-4 rounded-2xl cursor-pointer text-lg font-bold transition-all duration-300 ${
+                loading
+                  ? "bg-gray-600 cursor-not-allowed"
+                  : "bg-orange-500 hover:bg-orange-600 hover:scale-105 shadow-xl shadow-orange-500/30"
+              } text-black`}
+            >
+              {loading ? "Submitting..." : "🔥 Save Workout"}
+            </button>
+          </div>
         </div>
 
-        {/* Bottom Tip */}
-        <div className="mt-6 text-center">
-          <p className="text-gray-600 text-sm">
-            💡 <span className="font-medium">Pro tip:</span> Consistency is key to progress!
-          </p>
-        </div>
+        {/* Bottom Text */}
+        <p className="text-center mt-8 text-gray-500">
+          Discipline {`>`} Motivation
+        </p>
       </div>
     </div>
   );
