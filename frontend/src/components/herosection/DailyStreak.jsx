@@ -1,172 +1,117 @@
-import React, { useContext, useEffect, useState } from 'react';
-import HeatMap from '@uiw/react-heat-map';
-import Auth from '../auth/Auth';
-import { workoutContext } from '../../context/WorkoutContext';
+import React, { useContext, useEffect, useState } from "react";
+import HeatMap from "@uiw/react-heat-map";
+import { workoutContext } from "../../context/WorkoutContext";
 
 const convertDate = (d) => {
   const [dd, mm, yyyy] = d.split("/");
-  const paddedDD = dd.padStart(2, "0");
-  const paddedMM = mm.padStart(2, "0");
-
-  const formatted = `${yyyy}/${paddedMM}/${paddedDD}`;
-
-
-  return formatted;
+  return `${yyyy}/${mm.padStart(2, "0")}/${dd.padStart(2, "0")}`;
 };
 
 const motivationalQuotes = [
   "The only bad workout is the one that didn't happen.",
   "Success is the sum of small efforts repeated day in and day out.",
   "Your body can stand almost anything. It's your mind you have to convince.",
-  "The difference between try and triumph is a little umph.",
-  "Don't limit your challenges, challenge your limits.",
+  "Train insane or remain the same.",
   "Strive for progress, not perfection.",
-  "The pain you feel today will be the strength you feel tomorrow."
+  "The pain you feel today will be the strength you feel tomorrow.",
 ];
 
 const DailyStreak = () => {
-  
-  const data = useContext(workoutContext);
+  const { data } = useContext(workoutContext);
   const [dates, setDates] = useState([]);
   const [randomQuote, setRandomQuote] = useState("");
 
   useEffect(() => {
-    // Set random quote on component mount
-    const quote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const quote =
+      motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
     setRandomQuote(quote);
   }, []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (data?.data?.user?.workouts) {
-      const formatted = data.data.user.workouts.map(workout => ({
+    if (data?.user?.workouts) {
+      const formatted = data.user.workouts.map((workout) => ({
         date: convertDate(workout.date),
-        count: 10
+        count: 1,
       }));
-      setDates(formatted);   
+      setDates(formatted);
     }
   }, [data]);
 
-  // Calculate streak stats
   const totalWorkouts = dates.length;
-  const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+  const currentMonth = new Date().toLocaleString("default", {
+    month: "long",
+  });
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-12 px-4'>
-      <div className='max-w-5xl mx-auto'>
-        
-        {/* Header Section */}
-        <div className='text-center mb-8'>
-          <div className='text-6xl mb-4'>🔥</div>
-          <h1 className='text-4xl md:text-5xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-4'>
-            Your Daily Streak
+    <div className="min-h-screen bg-black py-16 px-4 text-white">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="text-6xl mb-4">🔥</div>
+          <h1 className="text-4xl md:text-5xl font-extrabold">
+            Your <span className="text-orange-500">Daily Streak</span>
           </h1>
-          <p className='text-gray-600 text-lg max-w-2xl mx-auto'>
-            Track your consistency and watch your fitness journey unfold
-          </p>
+          <p className="text-gray-400 mt-4">Consistency builds champions.</p>
         </div>
 
-        {/* Auth Component */}
-        <div className='mb-8'>
-          <Auth />
-        </div>
-
-        {dates && dates.length > 0 ? (
+        {dates.length > 0 ? (
           <>
-            {/* Stats Cards */}
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-8'>
-              <div className='bg-white rounded-2xl shadow-lg p-6 border-l-4 border-orange-500'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <p className='text-gray-600 text-sm font-medium'>Total Workouts</p>
-                    <p className='text-3xl font-bold text-gray-800 mt-1'>{totalWorkouts}</p>
-                  </div>
-                  <div className='text-4xl'>💪</div>
-                </div>
+            {/* Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+              <div className="bg-black/60 border border-orange-500/20 backdrop-blur-md rounded-xl p-6">
+                <p className="text-gray-400 text-sm">Total Workouts</p>
+                <p className="text-3xl font-bold text-orange-500 mt-2">
+                  {totalWorkouts}
+                </p>
               </div>
 
-              <div className='bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <p className='text-gray-600 text-sm font-medium'>Current Month</p>
-                    <p className='text-3xl font-bold text-gray-800 mt-1'>{currentMonth}</p>
-                  </div>
-                  <div className='text-4xl'>📅</div>
-                </div>
+              <div className="bg-black/60 border border-orange-500/20 backdrop-blur-md rounded-xl p-6">
+                <p className="text-gray-400 text-sm">Current Month</p>
+                <p className="text-3xl font-bold text-orange-500 mt-2">
+                  {currentMonth}
+                </p>
               </div>
 
-              <div className='bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <p className='text-gray-600 text-sm font-medium'>Keep it Up!</p>
-                    <p className='text-xl font-bold text-gray-800 mt-1'>On Fire! 🔥</p>
-                  </div>
-                  <div className='text-4xl'>⭐</div>
-                </div>
+              <div className="bg-black/60 border border-orange-500/20 backdrop-blur-md rounded-xl p-6">
+                <p className="text-gray-400 text-sm">Status</p>
+                <p className="text-xl font-bold text-orange-500 mt-2">
+                  On Fire 🔥
+                </p>
               </div>
             </div>
 
-            {/* Motivational Quote */}
-            <div className='bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl shadow-xl p-8 mb-8 text-white'>
-              <div className='flex items-start'>
-                <div className='text-6xl mr-6 opacity-50'>"</div>
-                <div>
-                  <p className='text-xl md:text-2xl font-medium italic leading-relaxed'>
-                    {randomQuote}
-                  </p>
-                  <div className='mt-4 flex items-center'>
-                    <div className='h-1 w-16 bg-white opacity-50 rounded'></div>
-                  </div>
-                </div>
-              </div>
+            {/* Quote */}
+            <div className="bg-linear-to-r from-orange-500 to-red-600 rounded-xl p-8 mb-10 shadow-xl">
+              <p className="text-xl italic text-white text-center">
+                "{randomQuote}"
+              </p>
             </div>
 
-            {/* Heatmap Section */}
-            <div className='bg-white rounded-2xl shadow-xl p-8 overflow-x-auto'>
-              <div className='mb-6'>
-                <h2 className='text-2xl font-bold text-gray-800 mb-2'>Activity Calendar</h2>
-                <p className='text-gray-600'>Your workout consistency at a glance</p>
-              </div>
-              
-              <div className='flex justify-center'>
+            {/* Heatmap */}
+            <div className="bg-black/60 border border-orange-500/20 backdrop-blur-md rounded-xl p-6 overflow-x-auto">
+              <h2 className="text-xl font-bold text-orange-500 mb-6">
+                Activity Calendar
+              </h2>
+
+              <div className="flex justify-center">
                 <HeatMap
                   value={dates}
-                  width={600}
-                  style={{ '--rhm-rect': '#e5e7eb' }}
-                  startDate={new Date('2025/11/01')}
-                  legendRender={(props) => <rect {...props} y={props.y + 10} rx={2} />}
-                  rectProps={{
-                    rx: 3.5
+                  width={window.innerWidth < 768 ? 320 : 800}
+                  style={{
+                    "--rhm-rect": "#1f2937",
                   }}
+                  rectProps={{ rx: 4 }}
                 />
               </div>
-
-            </div>
-
-            {/* Encouragement Section */}
-            <div className='mt-8 text-center bg-white rounded-2xl shadow-lg p-8'>
-              <div className='text-5xl mb-4'>🎯</div>
-              <h3 className='text-2xl font-bold text-gray-800 mb-2'>
-                Consistency is Key!
-              </h3>
-              <p className='text-gray-600 max-w-xl mx-auto'>
-                Every workout counts towards building a stronger, healthier you. Keep showing up and the results will follow!
-              </p>
             </div>
           </>
         ) : (
-          <div className='bg-white rounded-2xl shadow-xl p-12 text-center'>
-            <div className='text-7xl mb-6'>📊</div>
-            <h3 className='text-2xl font-bold text-gray-800 mb-4'>
-              Start Your Journey Today
-            </h3>
-            <p className='text-gray-600 text-lg mb-6'>
-              Please log in to see your daily streak and track your fitness progress.
+          <div className="bg-black/60 border border-orange-500/20 backdrop-blur-md rounded-xl p-10 text-center">
+            <p className="text-gray-400">
+              Start logging workouts to build your streak 🔥
             </p>
-            <div className='bg-blue-50 rounded-xl p-6 max-w-md mx-auto'>
-              <p className='text-blue-800 font-medium'>
-                💡 Your consistency will be visualized here once you start logging workouts!
-              </p>
-            </div>
           </div>
         )}
       </div>
