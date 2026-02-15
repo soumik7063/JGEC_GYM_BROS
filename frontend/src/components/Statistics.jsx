@@ -37,9 +37,9 @@ const Statistics = () => {
   }, [data]);
 
   return (
-    <div className="p-6 w-full max-w-2xl mx-auto">
+    <div className="p-6 w-full max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
       <motion.h2
-        className="text-2xl font-bold mb-4 text-center"
+        className="text-2xl font-bold mb-4 text-center text-gray-900 dark:text-white"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -62,13 +62,13 @@ const Statistics = () => {
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
                 <div className="flex justify-between mb-1">
-                  <span className="font-medium">{exerciseNames[index-1]}</span>
-                  <span className="text-gray-600">
+                  <span className="font-medium text-gray-900 dark:text-white">{exerciseNames[index-1]}</span>
+                  <span className="text-gray-600 dark:text-gray-400">
                     {value} / {maxValue}
                   </span>
                 </div>
 
-                <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
+                <div className="w-full h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                   <motion.div
                     className={`h-full rounded-full ${barColors[index]}`}
                     initial={{ width: 0 }}
@@ -82,7 +82,7 @@ const Statistics = () => {
         </div>
       ) : (
         <motion.p
-          className="text-center text-gray-500 mt-4"
+          className="text-center text-gray-500 dark:text-gray-400 mt-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >

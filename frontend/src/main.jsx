@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.jsx";
 import { ClerkProvider } from "@clerk/clerk-react";
 import WorkoutContext from "./context/WorkoutContext.jsx";
+import { ThemeProvider } from "./context/ThemeContext.jsx";
 import { ToastContainer } from "react-toastify";
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -12,11 +13,13 @@ if (!PUBLISHABLE_KEY) {
 }
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-      <WorkoutContext>
-        <App />
-      </WorkoutContext>
-    </ClerkProvider>
-    <ToastContainer/>
+    <ThemeProvider>
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+        <WorkoutContext>
+          <App />
+        </WorkoutContext>
+      </ClerkProvider>
+      <ToastContainer/>
+    </ThemeProvider>
   </StrictMode>
 );

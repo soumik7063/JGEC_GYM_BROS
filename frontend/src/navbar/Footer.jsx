@@ -23,7 +23,7 @@ const socialMidia = [
 
 const Footer = () => {
   return (
-    <div className='flex justify-between bg-gray-200 p-4 items-center text-center text-gray-600'>
+    <div className='flex justify-between bg-gray-200 dark:bg-gray-800 p-4 items-center text-center text-gray-600 dark:text-gray-300'>
       <h1>Author: Soumik Ghatak (IT'27)</h1>
       <div className='flex'>
         {socialMidia.map((social) => (
@@ -32,7 +32,7 @@ const Footer = () => {
             href={social.link} 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="mx-2 text-2xl text-gray-600 hover:text-blue-500 transition-colors duration-200"
+            className="mx-2 text-2xl text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200"
           >
             {social.icon}
           </a>
