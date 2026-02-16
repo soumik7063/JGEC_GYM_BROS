@@ -54,21 +54,21 @@ export default function CheckboxForm() {
   const watchedOptions = watch("selectedOptions") || [];
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4">
+    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
       <div className="w-full max-w-md">
         <div
           onSubmit={handleSubmit(onSubmit)}
-          className="bg-white p-8 rounded-2xl shadow-2xl border border-gray-100"
+          className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700"
         >
           {/* Header Section */}
           <div className="text-center mb-6">
             <div className="text-5xl mb-3">🏋️‍♂️</div>
-            <h2 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+            <h2 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400 mb-2">
               Log Your Workout
             </h2>
-            <div className="flex items-center justify-center gap-2 bg-blue-50 px-4 py-2 rounded-full inline-block">
-              <span className="text-blue-600">📅</span>
-              <p className="text-lg font-semibold text-blue-600">
+            <div className="flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-900/30 px-4 py-2 rounded-full inline-block">
+              <span className="text-blue-600 dark:text-blue-400">📅</span>
+              <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">
                 {date.toLocaleDateString()}
               </p>
             </div>
@@ -90,8 +90,8 @@ export default function CheckboxForm() {
                 key={index}
                 className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:shadow-md ${
                   watchedOptions.includes(opt)
-                    ? 'border-blue-500 bg-blue-50 shadow-md'
-                    : 'border-gray-200 bg-white hover:border-blue-300'
+                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 shadow-md'
+                    : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-blue-300 dark:hover:border-blue-500'
                 }`}
               >
                 <input
@@ -105,7 +105,7 @@ export default function CheckboxForm() {
                 />
                 <span className="text-2xl mr-3">{workoutEmojis[opt]}</span>
                 <span className={`text-lg font-medium ${
-                  watchedOptions.includes(opt) ? 'text-blue-700' : 'text-gray-700'
+                  watchedOptions.includes(opt) ? 'text-blue-700 dark:text-blue-300' : 'text-gray-700 dark:text-gray-200'
                 }`}>
                   {opt}
                 </span>
@@ -115,8 +115,8 @@ export default function CheckboxForm() {
 
           {/* Error Message */}
           {errors.selectedOptions && (
-            <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-500 rounded">
-              <p className="text-red-600 text-sm font-medium flex items-center">
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 rounded">
+              <p className="text-red-600 dark:text-red-400 text-sm font-medium flex items-center">
                 <span className="mr-2">⚠️</span>
                 {errors.selectedOptions.message}
               </p>
@@ -152,7 +152,7 @@ export default function CheckboxForm() {
 
         {/* Bottom Tip */}
         <div className="mt-6 text-center">
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
             💡 <span className="font-medium">Pro tip:</span> Consistency is key to progress!
           </p>
         </div>

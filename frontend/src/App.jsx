@@ -7,7 +7,7 @@ import Footer from './navbar/Footer'
 
 const App = () => {
   return (
-    <>
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <Navbar/>
       <SignedIn>
         <Herosection/>
@@ -20,7 +20,7 @@ const App = () => {
         </div>
       </SignedOut>
       <Footer/>
-    </>
+    </div>
   )
 }
 
