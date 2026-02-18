@@ -1,92 +1,101 @@
-import {  useUser } from '@clerk/clerk-react';
-import axios from 'axios';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { createContext } from 'react'
-import { SignIn } from '@clerk/clerk-react';
+/* eslint-disable react-refresh/only-export-components */
+import { useUser } from "@clerk/clerk-react";
+import { createContext, useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
 const workoutContext = createContext();
 
-const WorkoutContext = ({children}) => {
-    
-    const [loading,setLoading] = useState(false);
-   const user = useUser();
-   
-    const [error,setError] = useState(null);
-    const [success,setSuccess] = useState(null);
-   const [data , setdata] = useState(null);
-   const getWorkouts = async()=>{
-    try {
-        setLoading(true);
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/getworkout`,{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                userId:user.user.id,
-            })
-        })
-        const data = await res.json();
-        if(data.success){
-            console.log("getuser",data);
-            setdata(data);
-            console.log("Workouts fetched successfully",data);
-        }else{
-            console.log("Failed to fetch workouts",data);
-        }
-    } catch (error) {
-        console.log("Failed to fetch workouts",error);
-    } finally{
-        setLoading(false);
-    }
-   }
-   useEffect(()=>{
-    if(user && user.isSignedIn){
-        getWorkouts();
-        return;
-    }
-   },[user.isSignedIn])
+const WorkoutContext = ({ children }) => {
+  const { isSignedIn, isLoaded, user } = useUser();
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
 
-   const handelWorkout = async({date, exercises})=>{
-    console.log("Adding workout for date:", date, "with exercises:", exercises);
-    try {
-        setLoading(true);
-        setError(null);
-        setSuccess(null);
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/workout`,{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                userId:user.user.id,
-                date:date,
-                exercises:exercises
-            })
-        })
-        const data = await res.json();
-        if(data.success){
-            console.log("change",data);
+  const getWorkouts = useCallback(async () => {
+    if (!user?.id) return;
 
-            setdata(data);
-            console.log("Workout added successfully",data);
-        }else{
-            console.log("Failed to add workout",data);
-        }
-    } catch (error) {
-        console.log("Failed to add workout");
-    } finally{
-        setLoading(false);
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/getworkout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: user.id }),
+      });
+
+      const payload = await response.json();
+      if (!payload.success) {
+        throw new Error(payload.message || "Unable to fetch workouts.");
+      }
+
+      setData(payload);
+    } catch (fetchError) {
+      setError(fetchError.message);
+      toast.error(fetchError.message || "Failed to fetch workouts.");
+    } finally {
+      setLoading(false);
     }
-   }
-   
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    if (isSignedIn) {
+      getWorkouts();
+      return;
+    }
+    setData(null);
+    setError(null);
+  }, [getWorkouts, isLoaded, isSignedIn]);
+
+  const handelWorkout = async ({ date, exercises }) => {
+    if (!user?.id) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/workout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          date,
+          exercises,
+        }),
+      });
+      const payload = await response.json();
+
+      if (!payload.success) {
+        throw new Error(payload.message || "Unable to save workout.");
+      }
+
+      setData(payload);
+      toast.success("Workout saved successfully.");
+    } catch (submitError) {
+      setError(submitError.message);
+      toast.error(submitError.message || "Failed to save workout.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div>
-        <workoutContext.Provider value={{loading,handelWorkout, data}}>
-            {children}
-        </workoutContext.Provider>
-    </div>
-  )
-}
-export {WorkoutContext, workoutContext};
+    <workoutContext.Provider
+      value={{
+        loading,
+        data,
+        error,
+        handelWorkout,
+        refreshWorkouts: getWorkouts,
+      }}
+    >
+      {children}
+    </workoutContext.Provider>
+  );
+};
+
+export { WorkoutContext, workoutContext };
 export default WorkoutContext;

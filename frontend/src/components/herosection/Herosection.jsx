@@ -1,14 +1,14 @@
-import React from 'react'
-import DailyStreak from './DailyStreak'
-import Dashboard from './Dashboard'
+import React from "react";
+import DailyStreak from "./DailyStreak";
+import Dashboard from "./Dashboard";
 
 const Herosection = () => {
   return (
-    <div className='flex flex-col bg-gray-100 dark:bg-gray-900'>
-        <DailyStreak/>
-        <Dashboard/>
+    <div className="space-y-10">
+      <DailyStreak />
+      <Dashboard />
     </div>
-  )
-}
+  );
+};
 
-export default Herosection
+export default Herosection;
