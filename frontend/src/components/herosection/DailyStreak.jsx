@@ -62,12 +62,18 @@ const buildMonthlyCalendar = (workoutDateSet, startMonth, endMonth) => {
     }
 
     while (cells.length % 7 !== 0) {
-      cells.push({ type: "empty", key: `${year}-${month}-empty-end-${cells.length}` });
+      cells.push({
+        type: "empty",
+        key: `${year}-${month}-empty-end-${cells.length}`,
+      });
     }
 
     months.push({
       id: `${year}-${month}`,
-      label: monthStart.toLocaleString("default", { month: "long", year: "numeric" }),
+      label: monthStart.toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      }),
       cells,
       activeDays,
     });
@@ -80,14 +86,14 @@ const buildMonthlyCalendar = (workoutDateSet, startMonth, endMonth) => {
 
 const DailyStreak = () => {
   const { data } = useContext(workoutContext);
-  const workouts = useMemo(() => data?.user?.workouts || [], [data?.user?.workouts]);
+  const workouts = useMemo(
+    () => data?.user?.workouts || [],
+    [data?.user?.workouts],
+  );
   const insights = useMemo(() => getWorkoutInsights(workouts), [workouts]);
   const parsedWorkoutDates = useMemo(
-    () =>
-      workouts
-        .map((item) => toDateObject(item.date))
-        .filter(Boolean),
-    [workouts]
+    () => workouts.map((item) => toDateObject(item.date)).filter(Boolean),
+    [workouts],
   );
   const workoutDateSet = useMemo(() => {
     const set = new Set();
@@ -100,9 +106,13 @@ const DailyStreak = () => {
     if (parsedWorkoutDates.length === 0) return [];
 
     const firstWorkout = new Date(
-      Math.min(...parsedWorkoutDates.map((dateObj) => dateObj.getTime()))
+      Math.min(...parsedWorkoutDates.map((dateObj) => dateObj.getTime())),
     );
-    const startMonth = new Date(firstWorkout.getFullYear(), firstWorkout.getMonth(), 1);
+    const startMonth = new Date(
+      firstWorkout.getFullYear(),
+      firstWorkout.getMonth(),
+      1,
+    );
     const endMonth = new Date();
     endMonth.setDate(1);
     endMonth.setHours(0, 0, 0, 0);
@@ -116,7 +126,9 @@ const DailyStreak = () => {
     <section id="streak-calendar" className="panel scroll-mt-24 p-4 sm:p-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="section-title">Daily Streak Overview</h1>
+          <h1 className="section-title leading-tight pb-1">
+            Daily Streak Overview
+          </h1>
           <p className="text-muted mt-1 text-sm">
             Calendar-based consistency tracker for your daily gym sessions.
           </p>
@@ -150,9 +162,12 @@ const DailyStreak = () => {
           </div>
 
           <div className="panel border-slate-300/40 p-4 dark:border-slate-700">
-            <h2 className="text-lg font-semibold">Month-wise Streak Calendar</h2>
+            <h2 className="text-lg font-semibold">
+              Month-wise Streak Calendar
+            </h2>
             <p className="text-muted mt-1 text-sm">
-              Calendar view with weekday rows. Green boxes mark days where you logged workout.
+              Calendar view with weekday rows. Green boxes mark days where you
+              logged workout.
             </p>
             <div className="mt-4 overflow-x-auto pb-1">
               <div className="flex w-max gap-3 pr-1">
@@ -193,7 +208,7 @@ const DailyStreak = () => {
                                 : "border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800"
                             }`}
                           />
-                        )
+                        ),
                       )}
                     </div>
                   </article>
@@ -206,7 +221,8 @@ const DailyStreak = () => {
         <div className="rounded-xl border border-dashed border-slate-400/50 p-8 text-center">
           <h3 className="text-xl font-semibold">No streak data yet</h3>
           <p className="text-muted mt-2">
-            Start logging workouts to unlock streaks, heatmap activity, and progress insights.
+            Start logging workouts to unlock streaks, heatmap activity, and
+            progress insights.
           </p>
         </div>
       )}
