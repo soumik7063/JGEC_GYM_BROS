@@ -4,6 +4,8 @@ import Herosection from './components/herosection/Herosection'
 import Form from './components/Form'
 import Statistics from './components/Statistics'
 import Footer from './navbar/Footer'
+import AnalyticsDashboard from './components/AnalyticsDashboard'
+import WeightTracker from './components/WeightTracker'
 
 const App = () => {
   return (
@@ -13,6 +15,8 @@ const App = () => {
         <Herosection/>
         <Form/>
         <Statistics/>
+        <AnalyticsDashboard/>
+        <WeightTracker/>
       </SignedIn>
       <SignedOut>
         <div className='flex justify-center items-center h-[80vh]'>
