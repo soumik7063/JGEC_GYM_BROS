@@ -1,36 +1,40 @@
 import mongoose from "mongoose";
 const Workout = mongoose.Schema({
-    date:{
+    date: {
         type: String,
     },
-    exercise:{
+    exercise: {
         type: [Number],
     }
 })
 
 const userSchema = new mongoose.Schema({
-    userId:{
+    userId: {
         type: String,
         required: true,
         unique: true,
     },
-    name:{
+    name: {
         type: String,
         required: true,
         trim: true
     },
-    email:{
+    email: {
         type: String,
         required: true,
     },
     workouts: [
         Workout
     ],
-    totalWorkouts:{
-        type:[Number],
+    totalWorkouts: {
+        type: [Number],
     },
-    time:{
-        type:String,
+    customTemplates: [{
+        name: { type: String, required: true },
+        exercises: { type: [String], required: true }
+    }],
+    time: {
+        type: String,
     }
 }, {
     timestamps: true

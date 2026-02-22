@@ -82,6 +82,54 @@ const WorkoutContext = ({ children }) => {
     }
   };
 
+  const handleSaveTemplate = async (name, exercises) => {
+    if (!user?.id) return;
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/template`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, name, exercises }),
+      });
+      const payload = await response.json();
+      if (!payload.success) {
+        throw new Error(payload.message || "Unable to save template.");
+      }
+      setData({ ...data, user: payload.user });
+      toast.success("Template saved successfully.");
+    } catch (err) {
+      setError(err.message);
+      toast.error(err.message || "Failed to save template.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteTemplate = async (name) => {
+    if (!user?.id) return;
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/template`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, name }),
+      });
+      const payload = await response.json();
+      if (!payload.success) {
+        throw new Error(payload.message || "Unable to delete template.");
+      }
+      setData({ ...data, user: payload.user });
+      toast.success("Template deleted successfully.");
+    } catch (err) {
+      setError(err.message);
+      toast.error(err.message || "Failed to delete template.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <workoutContext.Provider
       value={{
@@ -89,6 +137,8 @@ const WorkoutContext = ({ children }) => {
         data,
         error,
         handelWorkout,
+        handleSaveTemplate,
+        handleDeleteTemplate,
         refreshWorkouts: getWorkouts,
       }}
     >
