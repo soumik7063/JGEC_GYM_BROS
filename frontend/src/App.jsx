@@ -1,15 +1,22 @@
 import Navbar from "./navbar/Navbar";
-import { SignedIn, SignedOut, SignIn } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, SignIn, useUser } from "@clerk/clerk-react";
 import Herosection from "./components/herosection/Herosection";
 import Form from "./components/Form";
 import Statistics from "./components/Statistics";
 import Footer from "./navbar/Footer";
+import ManualAuth from "./components/auth/ManualAuth";
+import { useAuth } from "./context/AuthContext";
 
 const App = () => {
+  const { manualUser } = useAuth();
+  const { isSignedIn: isClerkSignedIn } = useUser();
+
+  const isUserAuthenticated = isClerkSignedIn || !!manualUser;
+
   return (
     <div className="min-h-screen app-shell">
       <Navbar />
-      <SignedIn>
+      {(isUserAuthenticated) ? (
         <main className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
           <div className="space-y-10">
             <Herosection />
@@ -21,14 +28,20 @@ const App = () => {
             </section>
           </div>
         </main>
-      </SignedIn>
-      <SignedOut>
-        <div className="flex min-h-[80vh] items-center justify-center px-4">
-          <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-xl backdrop-blur dark:border-slate-700 dark:bg-slate-900/90">
-            <SignIn />
+      ) : (
+        <div className="flex min-h-[80vh] flex-col items-center justify-center px-4 py-10">
+          <div className="grid w-full max-w-5xl gap-10 lg:grid-cols-2 lg:items-center">
+            <div className="flex justify-center">
+              <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-xl backdrop-blur dark:border-slate-700 dark:bg-slate-900/90">
+                <SignIn />
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <ManualAuth />
+            </div>
           </div>
         </div>
-      </SignedOut>
+      )}
       <Footer />
     </div>
   );
