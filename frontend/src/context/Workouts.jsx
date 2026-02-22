@@ -1,11 +1,5 @@
-const workouts = {
-    1: "Shoulder Press",
-    2: "Back",
-    3: "Biceps",
-    4: "Triceps",
-    5: "Chest",
-    6: "Legs",
-    7: "Abs",
-    8: "Cardio"
-}
+import { WORKOUT_LABELS } from "../constants/workoutData";
+
+const workouts = WORKOUT_LABELS;
+
 export default workouts;

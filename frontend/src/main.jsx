@@ -6,6 +6,7 @@ import { ClerkProvider } from "@clerk/clerk-react";
 import WorkoutContext from "./context/WorkoutContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
@@ -19,7 +20,16 @@ createRoot(document.getElementById("root")).render(
           <App />
         </WorkoutContext>
       </ClerkProvider>
-      <ToastContainer/>
+      <ToastContainer
+        position="top-right"
+        autoClose={2200}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnFocusLoss={false}
+        pauseOnHover
+        theme="colored"
+      />
     </ThemeProvider>
   </StrictMode>
 );

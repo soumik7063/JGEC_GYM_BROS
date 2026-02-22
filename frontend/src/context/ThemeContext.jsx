@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext();
 
@@ -12,36 +13,27 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
-    // Get theme from localStorage or default to 'light'
-    const savedTheme = localStorage.getItem('gym-bros-theme');
-    return savedTheme || 'light';
+    const savedTheme = localStorage.getItem("gym-bros-theme");
+    if (savedTheme) return savedTheme;
+
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+    return prefersDark ? "dark" : "light";
   });
 
   useEffect(() => {
-    // Apply theme class to document root
     const root = document.documentElement;
-    console.log('Theme changed to:', theme);
-    console.log('Root element classes before:', root.className);
-    
-    if (theme === 'dark') {
+
+    if (theme === "dark") {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
-    
-    console.log('Root element classes after:', root.className);
-    
-    // Save theme to localStorage
-    localStorage.setItem('gym-bros-theme', theme);
+
+    localStorage.setItem("gym-bros-theme", theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    console.log('Toggle theme clicked!');
-    setTheme(prevTheme => {
-      const newTheme = prevTheme === 'light' ? 'dark' : 'light';
-      console.log('Switching from', prevTheme, 'to', newTheme);
-      return newTheme;
-    });
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
 
   return (

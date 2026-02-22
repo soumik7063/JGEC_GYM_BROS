@@ -7,6 +7,8 @@ import cors from 'cors';
 import getworkout from './routes/getworkout.js';
 import analytics from "./routes/analytics.js";
 import weight from "./routes/weight.js";
+import getWorkoutRouter from './routes/getworkout.js';
+import templateRouter from './routes/template.js';
 dotenv.config();
 
 const app = express();
@@ -39,6 +41,10 @@ app.use('/', workout);
 app.use('/', getworkout);
 app.use('/api/workouts/stats', analytics);
 app.use('/api/weight', weight);
+app.use('/', authRouter);
+app.use('/', workRouter);
+app.use('/', getWorkoutRouter);
+app.use('/', templateRouter);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
