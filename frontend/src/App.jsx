@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import Navbar from "./navbar/Navbar";
 import { SignedIn, SignedOut, SignIn, useUser } from "@clerk/clerk-react";
 import Herosection from "./components/herosection/Herosection";
@@ -6,27 +7,33 @@ import Statistics from "./components/Statistics";
 import Footer from "./navbar/Footer";
 import ManualAuth from "./components/auth/ManualAuth";
 import { useAuth } from "./context/AuthContext";
+import Profile from "./components/profile/Profile";
 
 const App = () => {
   const { manualUser } = useAuth();
   const { isSignedIn: isClerkSignedIn } = useUser();
+  const [activeView, setActiveView] = useState('home');
 
   const isUserAuthenticated = isClerkSignedIn || !!manualUser;
 
   return (
     <div className="min-h-screen app-shell">
-      <Navbar />
+      <Navbar setActiveView={setActiveView} />
       {(isUserAuthenticated) ? (
         <main className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <div className="space-y-10">
-            <Herosection />
-            <section>
-              <Form />
-            </section>
-            <section className="pb-12">
-              <Statistics />
-            </section>
-          </div>
+          {activeView === 'profile' ? (
+            <Profile />
+          ) : (
+            <div className="space-y-10">
+              <Herosection />
+              <section>
+                <Form />
+              </section>
+              <section className="pb-12">
+                <Statistics />
+              </section>
+            </div>
+          )}
         </main>
       ) : (
         <div className="flex min-h-[80vh] flex-col items-center justify-center px-4 py-10">

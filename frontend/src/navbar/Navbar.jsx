@@ -7,7 +7,7 @@ import React from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 
-const Navbar = () => {
+const Navbar = ({ setActiveView }) => {
   const { theme, toggleTheme } = useTheme();
   const { user: clerkUser, isSignedIn: isClerkSignedIn } = useUser();
   const { manualUser, logoutManual } = useAuth();
@@ -40,12 +40,16 @@ const Navbar = () => {
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           <img
-            className="h-12 w-12 rounded-xl border border-slate-300/40 object-cover shadow-lg"
+            className="h-12 w-12 cursor-pointer rounded-xl border border-slate-300/40 object-cover shadow-lg transition hover:opacity-80"
             src="./logo.png"
             alt="Gym Bros Logo"
+            onClick={() => setActiveView?.('home')}
           />
-          <div className="min-w-0">
-            <p className="text-lg font-extrabold tracking-wide">JGEC GYM BROS</p>
+          <div
+            className="min-w-0 cursor-pointer"
+            onClick={() => setActiveView?.('home')}
+          >
+            <p className="text-lg font-extrabold tracking-wide transition hover:text-cyan-500">JGEC GYM BROS</p>
             <p className={`truncate text-xs ${subtextClasses}`}>Strength. Discipline. Consistency.</p>
           </div>
         </div>
@@ -96,23 +100,35 @@ const Navbar = () => {
           )}
 
           {isClerkSignedIn && (
-            <div className={`flex items-center gap-2 rounded-xl border px-3 py-1.5 ${accountClasses}`}>
-              <span className={`hidden max-w-28 truncate text-sm sm:block ${accountTextClasses}`}>
-                {clerkUser?.firstName || "Account"}
-              </span>
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox: "w-8 h-8",
-                  },
-                }}
-              />
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setActiveView?.('profile')}
+                className={`hidden md:block rounded-xl border px-4 py-1.5 text-sm font-semibold transition ${toggleButtonClasses} ${accountTextClasses}`}
+              >
+                My Profile
+              </button>
+              <div className={`flex items-center gap-2 rounded-xl border px-3 py-1.5 ${accountClasses}`}>
+                <span className={`hidden max-w-28 truncate text-sm sm:block ${accountTextClasses}`}>
+                  {clerkUser?.firstName || "Account"}
+                </span>
+                <UserButton
+                  appearance={{
+                    elements: {
+                      avatarBox: "w-8 h-8",
+                    },
+                  }}
+                />
+              </div>
             </div>
           )}
 
           {manualUser && (
             <div className="flex items-center gap-3">
-              <div className={`flex items-center gap-2 rounded-xl border px-3 py-1.5 ${accountClasses}`}>
+              <div
+                className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-1.5 transition hover:opacity-80 ${accountClasses}`}
+                onClick={() => setActiveView?.('profile')}
+                title="View Profile"
+              >
                 <span className={`hidden max-w-28 truncate text-sm sm:block ${accountTextClasses}`}>
                   {manualUser.name.split(' ')[0]}
                 </span>
