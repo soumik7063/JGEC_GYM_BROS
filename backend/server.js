@@ -33,10 +33,10 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Welcome to the Gym Web API');
 });
-app.use('/', authRouter);
-app.use('/', workRouter);
-app.use('/', getWorkoutRouter);
-app.use('/', templateRouter);
+app.use('/api', authRouter);
+app.use('/api', workRouter);
+app.use('/api', getWorkoutRouter);
+app.use('/api', templateRouter);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

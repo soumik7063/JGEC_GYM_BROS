@@ -1,16 +1,19 @@
 import {
-  SignedIn,
-  SignedOut,
   SignInButton,
   UserButton,
   useUser,
 } from "@clerk/clerk-react";
 import React from "react";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
-  const { user } = useUser();
+  const { user: clerkUser, isSignedIn: isClerkSignedIn } = useUser();
+  const { manualUser, logoutManual } = useAuth();
+
+  const isUserAuthenticated = isClerkSignedIn || !!manualUser;
+
   const today = new Date().toLocaleDateString(undefined, {
     day: "2-digit",
     month: "short",
@@ -86,16 +89,16 @@ const Navbar = () => {
             )}
           </button>
 
-          <SignedOut>
+          {!isUserAuthenticated && (
             <SignInButton mode="modal">
               <button className="primary-btn px-4 py-2 text-sm">Sign in</button>
             </SignInButton>
-          </SignedOut>
+          )}
 
-          <SignedIn>
+          {isClerkSignedIn && (
             <div className={`flex items-center gap-2 rounded-xl border px-3 py-1.5 ${accountClasses}`}>
               <span className={`hidden max-w-28 truncate text-sm sm:block ${accountTextClasses}`}>
-                {user?.firstName || "Account"}
+                {clerkUser?.firstName || "Account"}
               </span>
               <UserButton
                 appearance={{
@@ -105,7 +108,26 @@ const Navbar = () => {
                 }}
               />
             </div>
-          </SignedIn>
+          )}
+
+          {manualUser && (
+            <div className="flex items-center gap-3">
+              <div className={`flex items-center gap-2 rounded-xl border px-3 py-1.5 ${accountClasses}`}>
+                <span className={`hidden max-w-28 truncate text-sm sm:block ${accountTextClasses}`}>
+                  {manualUser.name.split(' ')[0]}
+                </span>
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 font-bold text-white">
+                  {manualUser.name[0].toUpperCase()}
+                </div>
+              </div>
+              <button
+                onClick={logoutManual}
+                className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-bold text-red-500 transition hover:bg-red-500 hover:text-white"
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </nav>

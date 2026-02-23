@@ -2,27 +2,38 @@
 import { useUser } from "@clerk/clerk-react";
 import { createContext, useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useAuth } from "./AuthContext";
 
 const workoutContext = createContext();
 
 const WorkoutContext = ({ children }) => {
-  const { isSignedIn, isLoaded, user } = useUser();
+  const { isSignedIn: isClerkSignedIn, isLoaded: isClerkLoaded, user: clerkUser } = useUser();
+  const { manualUser, token, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
+  const activeUser = clerkUser || manualUser;
+  const isUserAuthenticated = isClerkSignedIn || !!manualUser;
+  const userId = clerkUser?.id || manualUser?.userId || manualUser?.email;
+
   const getWorkouts = useCallback(async () => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
       setLoading(true);
       setError(null);
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const response = await fetch(`${import.meta.env.VITE_API_URL}/getworkout`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: user.id }),
+        headers,
+        body: JSON.stringify({ userId }),
       });
 
       const payload = await response.json();
@@ -37,31 +48,36 @@ const WorkoutContext = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, [userId, token]);
 
   useEffect(() => {
-    if (!isLoaded) return;
-    if (isSignedIn) {
+    if (!isClerkLoaded || authLoading) return;
+    if (isUserAuthenticated) {
       getWorkouts();
       return;
     }
     setData(null);
     setError(null);
-  }, [getWorkouts, isLoaded, isSignedIn]);
+  }, [getWorkouts, isClerkLoaded, authLoading, isUserAuthenticated]);
 
   const handelWorkout = async ({ date, exercises }) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
       setLoading(true);
       setError(null);
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const response = await fetch(`${import.meta.env.VITE_API_URL}/workout`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify({
-          userId: user.id,
+          userId,
           date,
           exercises,
         }),
@@ -83,14 +99,21 @@ const WorkoutContext = ({ children }) => {
   };
 
   const handleSaveTemplate = async (name, exercises) => {
-    if (!user?.id) return;
+    if (!userId) return;
     try {
       setLoading(true);
       setError(null);
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const response = await fetch(`${import.meta.env.VITE_API_URL}/template`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, name, exercises }),
+        headers,
+        body: JSON.stringify({ userId, name, exercises }),
       });
       const payload = await response.json();
       if (!payload.success) {
@@ -107,14 +130,21 @@ const WorkoutContext = ({ children }) => {
   };
 
   const handleDeleteTemplate = async (name) => {
-    if (!user?.id) return;
+    if (!userId) return;
     try {
       setLoading(true);
       setError(null);
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const response = await fetch(`${import.meta.env.VITE_API_URL}/template`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, name }),
+        headers,
+        body: JSON.stringify({ userId, name }),
       });
       const payload = await response.json();
       if (!payload.success) {
