@@ -1,9 +1,8 @@
 import {
   SignInButton,
-  UserButton,
   useUser,
 } from "@clerk/clerk-react";
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import { Link, useLocation } from "react-router-dom";
@@ -12,9 +11,22 @@ const Navbar = ({ setActiveView }) => {
   const { theme, toggleTheme } = useTheme();
   const { user: clerkUser, isSignedIn: isClerkSignedIn } = useUser();
   const { manualUser, logoutManual } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const location = useLocation();
 
   const isUserAuthenticated = isClerkSignedIn || !!manualUser;
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const today = new Date().toLocaleDateString(undefined, {
     day: "2-digit",
@@ -36,6 +48,26 @@ const Navbar = ({ setActiveView }) => {
     ? "border-slate-500/40 bg-slate-700/40"
     : "border-slate-300 bg-slate-100";
   const accountTextClasses = isDark ? "text-slate-200" : "text-slate-700";
+
+  const dropdownClasses = isDark
+    ? "border-slate-700 bg-slate-900 shadow-2xl shadow-black/40"
+    : "border-slate-200 bg-white shadow-2xl shadow-slate-200/60";
+  const dropdownItemClasses = isDark
+    ? "hover:bg-slate-800 text-slate-200"
+    : "hover:bg-slate-100 text-slate-700";
+
+  const displayName = manualUser?.name?.split(' ')[0] || clerkUser?.firstName || "Account";
+  const avatarLetter = (manualUser?.name?.[0] || clerkUser?.firstName?.[0] || "A").toUpperCase();
+
+  const handleLogout = () => {
+    setDropdownOpen(false);
+    logoutManual();
+  };
+
+  const handleProfile = () => {
+    setDropdownOpen(false);
+    setActiveView?.('profile');
+  };
 
   return (
     <nav className={`sticky top-0 z-50 border-b shadow-xl backdrop-blur ${navClasses}`}>
@@ -107,53 +139,78 @@ const Navbar = ({ setActiveView }) => {
             </SignInButton>
           )}
 
-          {isClerkSignedIn && (
-            <div className="flex items-center gap-2">
+          {isUserAuthenticated && (
+            <div className="relative" ref={dropdownRef}>
+              {/* Profile trigger button */}
               <button
-                onClick={() => setActiveView?.('profile')}
-                className={`hidden md:block rounded-xl border px-4 py-1.5 text-sm font-semibold transition ${toggleButtonClasses} ${accountTextClasses}`}
-              >
-                My Profile
-              </button>
-              <div className={`flex items-center gap-2 rounded-xl border px-3 py-1.5 ${accountClasses}`}>
-                <span className={`hidden max-w-28 truncate text-sm sm:block ${accountTextClasses}`}>
-                  {clerkUser?.firstName || "Account"}
-                </span>
-                <UserButton
-                  appearance={{
-                    elements: {
-                      avatarBox: "w-8 h-8",
-                    },
-                  }}
-                />
-              </div>
-            </div>
-          )}
-
-          {manualUser && (
-            <div className="flex items-center gap-3">
-              <div
+                onClick={() => setDropdownOpen((prev) => !prev)}
                 className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-1.5 transition hover:opacity-80 ${accountClasses}`}
-                onClick={() => setActiveView?.('profile')}
-                title="View Profile"
               >
-                <span className={`hidden max-w-28 truncate text-sm sm:block ${accountTextClasses}`}>
-                  {manualUser.name.split(' ')[0]}
+                <span className={`hidden max-w-28 truncate text-sm font-semibold sm:block ${accountTextClasses}`}>
+                  {displayName}
                 </span>
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 font-bold text-white">
-                  {manualUser.name[0].toUpperCase()}
-                </div>
-              </div>
-              <button
-                onClick={logoutManual}
-                className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-bold text-red-500 transition hover:bg-red-500 hover:text-white"
-              >
-                Logout
+                {clerkUser?.imageUrl ? (
+                  <img
+                    src={clerkUser.imageUrl}
+                    alt="Profile"
+                    className="h-8 w-8 rounded-full object-cover ring-2 ring-cyan-500/30"
+                  />
+                ) : (
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 font-bold text-white ring-2 ring-cyan-500/30">
+                    {avatarLetter}
+                  </div>
+                )}
+                {/* Chevron */}
+                <svg
+                  className={`h-4 w-4 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""} ${isDark ? "text-slate-400" : "text-slate-500"}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
+
+              {/* Dropdown menu */}
+              {dropdownOpen && (
+                <div
+                  className={`absolute right-0 mt-2 w-48 overflow-hidden rounded-xl border backdrop-blur-lg ${dropdownClasses}`}
+                  style={{ animation: "fadeSlideIn 0.15s ease-out" }}
+                >
+                  <button
+                    onClick={handleProfile}
+                    className={`flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium transition ${dropdownItemClasses}`}
+                  >
+                    <svg className="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    My Profile
+                  </button>
+                  <div className={`mx-3 border-t ${isDark ? "border-slate-700/60" : "border-slate-200"}`} />
+                  <button
+                    onClick={handleLogout}
+                    className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-red-500 transition hover:bg-red-500/10"
+                  >
+                    <svg className="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
       </div>
+
+      {/* Dropdown animation keyframes */}
+      <style>{`
+        @keyframes fadeSlideIn {
+          from { opacity: 0; transform: translateY(-6px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </nav>
   );
 };
