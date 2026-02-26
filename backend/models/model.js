@@ -35,6 +35,19 @@ const userSchema = new mongoose.Schema({
         type: [Number],
         default: [0, 0, 0, 0, 0, 0, 0, 0, 0] // Pre-initialize for 1-8 indices
     },
+    weightLogs: [{
+        date: {
+            type: String,
+            required: true
+        },
+        weight: {
+            type: Number,
+            required: true
+        },
+        unit: {
+            type: String,
+            default: 'kg'
+        }
     customTemplates: [{
         name: { type: String, required: true },
         exercises: { type: [String], required: true }

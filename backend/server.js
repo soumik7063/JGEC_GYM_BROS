@@ -1,9 +1,12 @@
 import express from 'express';
 import dotenv, { config } from 'dotenv';
 import { connectDB } from './models/DB.js';
-import authRouter from './routes/authlogin.js';
-import workRouter from './routes/workout.js';
+import authlogin from './routes/authlogin.js';
+import workout from './routes/workout.js';
 import cors from 'cors';
+import getworkout from './routes/getworkout.js';
+import analytics from "./routes/analytics.js";
+import weight from "./routes/weight.js";
 import getWorkoutRouter from './routes/getworkout.js';
 import templateRouter from './routes/template.js';
 dotenv.config();

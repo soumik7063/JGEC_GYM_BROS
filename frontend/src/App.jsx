@@ -1,4 +1,11 @@
-import React, { useState } from "react";
+import Navbar from './navbar/Navbar'
+import { SignedIn, SignedOut, SignIn } from '@clerk/clerk-react'
+import Herosection from './components/herosection/Herosection'
+import Form from './components/Form'
+import Statistics from './components/Statistics'
+import Footer from './navbar/Footer'
+import AnalyticsDashboard from './components/AnalyticsDashboard'
+import WeightTracker from './components/WeightTracker'
 import Navbar from "./navbar/Navbar";
 import { SignedIn, SignedOut, SignIn, useUser } from "@clerk/clerk-react";
 import Herosection from "./components/herosection/Herosection";
