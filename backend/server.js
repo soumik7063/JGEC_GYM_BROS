@@ -36,15 +36,10 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Welcome to the Gym Web API');
 });
-app.use('/', authlogin);
-app.use('/', workout);
-app.use('/', getworkout);
-app.use('/api/workouts/stats', analytics);
-app.use('/api/weight', weight);
-app.use('/', authRouter);
-app.use('/', workRouter);
-app.use('/', getWorkoutRouter);
-app.use('/', templateRouter);
+app.use('/api', authRouter);
+app.use('/api', workRouter);
+app.use('/api', getWorkoutRouter);
+app.use('/api', templateRouter);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

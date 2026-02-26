@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const Workout = mongoose.Schema({
+const Workout = new mongoose.Schema({
     date: {
         type: String,
     },
@@ -11,8 +11,8 @@ const Workout = mongoose.Schema({
 const userSchema = new mongoose.Schema({
     userId: {
         type: String,
-        required: true,
         unique: true,
+        sparse: true, // Allow multiple nulls if we don't use userId for manual users
     },
     name: {
         type: String,
@@ -22,12 +22,18 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
+        unique: true,
     },
-    workouts: [
-        Workout
-    ],
+    password: {
+        type: String,
+    },
+    workouts: {
+        type: [Workout],
+        default: []
+    },
     totalWorkouts: {
         type: [Number],
+        default: [0, 0, 0, 0, 0, 0, 0, 0, 0] // Pre-initialize for 1-8 indices
     },
     weightLogs: [{
         date: {

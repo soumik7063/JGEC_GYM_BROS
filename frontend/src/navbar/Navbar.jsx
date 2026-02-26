@@ -1,16 +1,21 @@
 import {
-  SignedIn,
-  SignedOut,
   SignInButton,
   UserButton,
   useUser,
 } from "@clerk/clerk-react";
 import React from "react";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
+import { Link, useLocation } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ setActiveView }) => {
   const { theme, toggleTheme } = useTheme();
-  const { user } = useUser();
+  const { user: clerkUser, isSignedIn: isClerkSignedIn } = useUser();
+  const { manualUser, logoutManual } = useAuth();
+  const location = useLocation();
+
+  const isUserAuthenticated = isClerkSignedIn || !!manualUser;
+
   const today = new Date().toLocaleDateString(undefined, {
     day: "2-digit",
     month: "short",
@@ -37,23 +42,33 @@ const Navbar = () => {
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           <img
-            className="h-12 w-12 rounded-xl border border-slate-300/40 object-cover shadow-lg"
+            className="h-12 w-12 cursor-pointer rounded-xl border border-slate-300/40 object-cover shadow-lg transition hover:opacity-80"
             src="./logo.png"
             alt="Gym Bros Logo"
+            onClick={() => setActiveView?.('home')}
           />
-          <div className="min-w-0">
-            <p className="text-lg font-extrabold tracking-wide">JGEC GYM BROS</p>
+          <div
+            className="min-w-0 cursor-pointer"
+            onClick={() => setActiveView?.('home')}
+          >
+            <p className="text-lg font-extrabold tracking-wide transition hover:text-cyan-500">JGEC GYM BROS</p>
             <p className={`truncate text-xs ${subtextClasses}`}>Strength. Discipline. Consistency.</p>
           </div>
         </div>
 
-        <div className="hidden items-center gap-3 md:flex">
-          <span className={`metric-chip ${chipClasses}`}>
-            Campus Fitness Hub
-          </span>
-          <span className={`metric-chip ${chipClasses}`}>
-            {today}
-          </span>
+        <div className="hidden items-center gap-6 md:flex">
+          <div className="flex items-center gap-4 border-r border-slate-200 pr-6 dark:border-slate-700">
+            <Link to="/" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Home</Link>
+            <Link to="/community" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/community' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Community</Link>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className={`metric-chip ${chipClasses}`}>
+              Campus Fitness Hub
+            </span>
+            <span className={`metric-chip ${chipClasses}`}>
+              {today}
+            </span>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -86,26 +101,57 @@ const Navbar = () => {
             )}
           </button>
 
-          <SignedOut>
+          {!isUserAuthenticated && (
             <SignInButton mode="modal">
               <button className="primary-btn px-4 py-2 text-sm">Sign in</button>
             </SignInButton>
-          </SignedOut>
+          )}
 
-          <SignedIn>
-            <div className={`flex items-center gap-2 rounded-xl border px-3 py-1.5 ${accountClasses}`}>
-              <span className={`hidden max-w-28 truncate text-sm sm:block ${accountTextClasses}`}>
-                {user?.firstName || "Account"}
-              </span>
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox: "w-8 h-8",
-                  },
-                }}
-              />
+          {isClerkSignedIn && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setActiveView?.('profile')}
+                className={`hidden md:block rounded-xl border px-4 py-1.5 text-sm font-semibold transition ${toggleButtonClasses} ${accountTextClasses}`}
+              >
+                My Profile
+              </button>
+              <div className={`flex items-center gap-2 rounded-xl border px-3 py-1.5 ${accountClasses}`}>
+                <span className={`hidden max-w-28 truncate text-sm sm:block ${accountTextClasses}`}>
+                  {clerkUser?.firstName || "Account"}
+                </span>
+                <UserButton
+                  appearance={{
+                    elements: {
+                      avatarBox: "w-8 h-8",
+                    },
+                  }}
+                />
+              </div>
             </div>
-          </SignedIn>
+          )}
+
+          {manualUser && (
+            <div className="flex items-center gap-3">
+              <div
+                className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-1.5 transition hover:opacity-80 ${accountClasses}`}
+                onClick={() => setActiveView?.('profile')}
+                title="View Profile"
+              >
+                <span className={`hidden max-w-28 truncate text-sm sm:block ${accountTextClasses}`}>
+                  {manualUser.name.split(' ')[0]}
+                </span>
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 font-bold text-white">
+                  {manualUser.name[0].toUpperCase()}
+                </div>
+              </div>
+              <button
+                onClick={logoutManual}
+                className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-bold text-red-500 transition hover:bg-red-500 hover:text-white"
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </nav>
