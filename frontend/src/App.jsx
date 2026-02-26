@@ -53,22 +53,9 @@ const App = () => {
             <ManualAuth />
           </div>
         </div>
+      )}
       </div>
     );
   };
-
-  return (
-    <div className="min-h-screen app-shell">
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<HomeOrAuth />} />
-        <Route path="/community" element={
-          isUserAuthenticated ? <Community /> : <Navigate to="/" replace />
-        } />
-      </Routes>
-      <Footer />
-    </div>
-  );
-};
 
 export default App;

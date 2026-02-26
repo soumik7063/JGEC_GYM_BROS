@@ -27,6 +27,7 @@ const ManualAuth = () => {
             : formData;
 
         try {
+            console.log(import.meta.env.VITE_API_URL);
             const response = await fetch(`${import.meta.env.VITE_API_URL}${endpoint}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
