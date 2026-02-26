@@ -6,6 +6,8 @@ import Form from "./components/Form";
 import Statistics from "./components/Statistics";
 import Footer from "./navbar/Footer";
 import ManualAuth from "./components/auth/ManualAuth";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Community from "./pages/Community";
 import { useAuth } from "./context/AuthContext";
 import Profile from "./components/profile/Profile";
 
@@ -47,8 +49,23 @@ const App = () => {
               <ManualAuth />
             </div>
           </div>
+          <div className="flex justify-center">
+            <ManualAuth />
+          </div>
         </div>
-      )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="min-h-screen app-shell">
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<HomeOrAuth />} />
+        <Route path="/community" element={
+          isUserAuthenticated ? <Community /> : <Navigate to="/" replace />
+        } />
+      </Routes>
       <Footer />
     </div>
   );

@@ -6,11 +6,13 @@ import {
 import React from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = ({ setActiveView }) => {
   const { theme, toggleTheme } = useTheme();
   const { user: clerkUser, isSignedIn: isClerkSignedIn } = useUser();
   const { manualUser, logoutManual } = useAuth();
+  const location = useLocation();
 
   const isUserAuthenticated = isClerkSignedIn || !!manualUser;
 
@@ -54,13 +56,19 @@ const Navbar = ({ setActiveView }) => {
           </div>
         </div>
 
-        <div className="hidden items-center gap-3 md:flex">
-          <span className={`metric-chip ${chipClasses}`}>
-            Campus Fitness Hub
-          </span>
-          <span className={`metric-chip ${chipClasses}`}>
-            {today}
-          </span>
+        <div className="hidden items-center gap-6 md:flex">
+          <div className="flex items-center gap-4 border-r border-slate-200 pr-6 dark:border-slate-700">
+            <Link to="/" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Home</Link>
+            <Link to="/community" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/community' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Community</Link>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className={`metric-chip ${chipClasses}`}>
+              Campus Fitness Hub
+            </span>
+            <span className={`metric-chip ${chipClasses}`}>
+              {today}
+            </span>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
