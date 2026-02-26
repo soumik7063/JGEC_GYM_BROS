@@ -6,11 +6,13 @@ import {
 import React from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const { user: clerkUser, isSignedIn: isClerkSignedIn } = useUser();
   const { manualUser, logoutManual } = useAuth();
+  const location = useLocation();
 
   const isUserAuthenticated = isClerkSignedIn || !!manualUser;
 
@@ -39,24 +41,32 @@ const Navbar = () => {
     <nav className={`sticky top-0 z-50 border-b shadow-xl backdrop-blur ${navClasses}`}>
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
-          <img
-            className="h-12 w-12 rounded-xl border border-slate-300/40 object-cover shadow-lg"
-            src="./logo.png"
-            alt="Gym Bros Logo"
-          />
-          <div className="min-w-0">
-            <p className="text-lg font-extrabold tracking-wide">JGEC GYM BROS</p>
-            <p className={`truncate text-xs ${subtextClasses}`}>Strength. Discipline. Consistency.</p>
-          </div>
+          <Link to="/" className="flex items-center gap-3 transition hover:opacity-90">
+            <img
+              className="h-12 w-12 rounded-xl border border-slate-300/40 object-cover shadow-lg"
+              src="./logo.png"
+              alt="Gym Bros Logo"
+            />
+            <div className="min-w-0">
+              <p className="text-lg font-extrabold tracking-wide">JGEC GYM BROS</p>
+              <p className={`truncate text-xs ${subtextClasses}`}>Strength. Discipline. Consistency.</p>
+            </div>
+          </Link>
         </div>
 
-        <div className="hidden items-center gap-3 md:flex">
-          <span className={`metric-chip ${chipClasses}`}>
-            Campus Fitness Hub
-          </span>
-          <span className={`metric-chip ${chipClasses}`}>
-            {today}
-          </span>
+        <div className="hidden items-center gap-6 md:flex">
+          <div className="flex items-center gap-4 border-r border-slate-200 pr-6 dark:border-slate-700">
+            <Link to="/" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Home</Link>
+            <Link to="/community" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/community' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Community</Link>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className={`metric-chip ${chipClasses}`}>
+              Campus Fitness Hub
+            </span>
+            <span className={`metric-chip ${chipClasses}`}>
+              {today}
+            </span>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
