@@ -3,16 +3,18 @@ import {
   UserButton,
   useUser,
 } from "@clerk/clerk-react";
-import React from "react";
+import React, { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import { Link, useLocation } from "react-router-dom";
+import ProteinTrackerModal from "../components/ProteinTrackerModal";
 
 const Navbar = ({ setActiveView }) => {
   const { theme, toggleTheme } = useTheme();
   const { user: clerkUser, isSignedIn: isClerkSignedIn } = useUser();
   const { manualUser, logoutManual } = useAuth();
   const location = useLocation();
+  const [isProteinModalOpen, setIsProteinModalOpen] = useState(false);
 
   const isUserAuthenticated = isClerkSignedIn || !!manualUser;
 
@@ -110,6 +112,16 @@ const Navbar = ({ setActiveView }) => {
           {isClerkSignedIn && (
             <div className="flex items-center gap-2">
               <button
+                onClick={() => setIsProteinModalOpen(true)}
+                className={`hidden lg:flex items-center gap-2 rounded-xl border px-3 py-1.5 text-sm font-semibold transition ${toggleButtonClasses} ${accountTextClasses}`}
+                title="Track Protein"
+              >
+                <svg className="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Protein
+              </button>
+              <button
                 onClick={() => setActiveView?.('profile')}
                 className={`hidden md:block rounded-xl border px-4 py-1.5 text-sm font-semibold transition ${toggleButtonClasses} ${accountTextClasses}`}
               >
@@ -132,6 +144,16 @@ const Navbar = ({ setActiveView }) => {
 
           {manualUser && (
             <div className="flex items-center gap-3">
+              <button
+                onClick={() => setIsProteinModalOpen(true)}
+                className={`hidden lg:flex items-center gap-2 rounded-xl border px-3 py-1.5 text-sm font-semibold transition hover:opacity-80 ${accountClasses} ${accountTextClasses}`}
+                title="Track Protein"
+              >
+                <svg className="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Protein
+              </button>
               <div
                 className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-1.5 transition hover:opacity-80 ${accountClasses}`}
                 onClick={() => setActiveView?.('profile')}
@@ -154,6 +176,11 @@ const Navbar = ({ setActiveView }) => {
           )}
         </div>
       </div>
+
+      <ProteinTrackerModal
+        isOpen={isProteinModalOpen}
+        onClose={() => setIsProteinModalOpen(false)}
+      />
     </nav>
   );
 };
