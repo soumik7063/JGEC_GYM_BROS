@@ -48,9 +48,14 @@ const userSchema = new mongoose.Schema({
             type: String,
             default: 'kg'
         }
+    }],
     customTemplates: [{
         name: { type: String, required: true },
         exercises: { type: [String], required: true }
+    }],
+    proteinLogs: [{
+        date: { type: String, required: true },
+        protein: { type: Number, required: true }
     }],
     time: {
         type: String,
