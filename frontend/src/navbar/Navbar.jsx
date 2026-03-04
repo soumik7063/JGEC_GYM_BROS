@@ -6,6 +6,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import { Link, useLocation } from "react-router-dom";
+import ProteinTrackerModal from "../components/ProteinTrackerModal";
 
 const Navbar = ({ setActiveView }) => {
   const { theme, toggleTheme } = useTheme();
@@ -14,6 +15,7 @@ const Navbar = ({ setActiveView }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const location = useLocation();
+  const [isProteinModalOpen, setIsProteinModalOpen] = useState(false);
 
   const isUserAuthenticated = isClerkSignedIn || !!manualUser;
 
@@ -140,69 +142,88 @@ const Navbar = ({ setActiveView }) => {
           )}
 
           {isUserAuthenticated && (
-            <div className="relative" ref={dropdownRef}>
-              {/* Profile trigger button */}
+            <div className="flex items-center gap-3">
+              {/* Protein tracker button */}
               <button
-                onClick={() => setDropdownOpen((prev) => !prev)}
-                className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-1.5 transition hover:opacity-80 ${accountClasses}`}
+                onClick={() => setIsProteinModalOpen(true)}
+                className={`hidden lg:flex items-center gap-2 rounded-xl border px-3 py-1.5 text-sm font-semibold transition ${toggleButtonClasses} ${accountTextClasses}`}
+                title="Track Protein"
               >
-                <span className={`hidden max-w-28 truncate text-sm font-semibold sm:block ${accountTextClasses}`}>
-                  {displayName}
-                </span>
-                {clerkUser?.imageUrl ? (
-                  <img
-                    src={clerkUser.imageUrl}
-                    alt="Profile"
-                    className="h-8 w-8 rounded-full object-cover ring-2 ring-cyan-500/30"
-                  />
-                ) : (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 font-bold text-white ring-2 ring-cyan-500/30">
-                    {avatarLetter}
-                  </div>
-                )}
-                {/* Chevron */}
-                <svg
-                  className={`h-4 w-4 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""} ${isDark ? "text-slate-400" : "text-slate-500"}`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                <svg className="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
+                Protein
               </button>
 
-              {/* Dropdown menu */}
-              {dropdownOpen && (
-                <div
-                  className={`absolute right-0 mt-2 w-48 overflow-hidden rounded-xl border backdrop-blur-lg ${dropdownClasses}`}
-                  style={{ animation: "fadeSlideIn 0.15s ease-out" }}
+              <div className="relative" ref={dropdownRef}>
+                {/* Profile trigger button */}
+                <button
+                  onClick={() => setDropdownOpen((prev) => !prev)}
+                  className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-1.5 transition hover:opacity-80 ${accountClasses}`}
                 >
-                  <button
-                    onClick={handleProfile}
-                    className={`flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium transition ${dropdownItemClasses}`}
+                  <span className={`hidden max-w-28 truncate text-sm font-semibold sm:block ${accountTextClasses}`}>
+                    {displayName}
+                  </span>
+                  {clerkUser?.imageUrl ? (
+                    <img
+                      src={clerkUser.imageUrl}
+                      alt="Profile"
+                      className="h-8 w-8 rounded-full object-cover ring-2 ring-cyan-500/30"
+                    />
+                  ) : (
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 font-bold text-white ring-2 ring-cyan-500/30">
+                      {avatarLetter}
+                    </div>
+                  )}
+                  {/* Chevron */}
+                  <svg
+                    className={`h-4 w-4 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""} ${isDark ? "text-slate-400" : "text-slate-500"}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
                   >
-                    <svg className="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    My Profile
-                  </button>
-                  <div className={`mx-3 border-t ${isDark ? "border-slate-700/60" : "border-slate-200"}`} />
-                  <button
-                    onClick={handleLogout}
-                    className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-red-500 transition hover:bg-red-500/10"
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {/* Dropdown menu */}
+                {dropdownOpen && (
+                  <div
+                    className={`absolute right-0 mt-2 w-48 overflow-hidden rounded-xl border backdrop-blur-lg ${dropdownClasses}`}
+                    style={{ animation: "fadeSlideIn 0.15s ease-out" }}
                   >
-                    <svg className="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    Logout
-                  </button>
-                </div>
-              )}
+                    <button
+                      onClick={handleProfile}
+                      className={`flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium transition ${dropdownItemClasses}`}
+                    >
+                      <svg className="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      My Profile
+                    </button>
+                    <div className={`mx-3 border-t ${isDark ? "border-slate-700/60" : "border-slate-200"}`} />
+                    <button
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-red-500 transition hover:bg-red-500/10"
+                    >
+                      <svg className="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
       </div>
+
+      <ProteinTrackerModal
+        isOpen={isProteinModalOpen}
+        onClose={() => setIsProteinModalOpen(false)}
+      />
 
       {/* Dropdown animation keyframes */}
       <style>{`

@@ -4,11 +4,11 @@ import { connectDB } from './models/DB.js';
 import authlogin from './routes/authlogin.js';
 import workout from './routes/workout.js';
 import cors from 'cors';
-import getworkout from './routes/getworkout.js';
 import analytics from "./routes/analytics.js";
 import weight from "./routes/weight.js";
 import getWorkoutRouter from './routes/getworkout.js';
 import templateRouter from './routes/template.js';
+import proteinRouter from './routes/protein.js';
 dotenv.config();
 
 const app = express();
@@ -36,10 +36,10 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Welcome to the Gym Web API');
 });
-app.use('/api', authRouter);
-app.use('/api', workRouter);
+app.use('/api', authlogin);
 app.use('/api', getWorkoutRouter);
 app.use('/api', templateRouter);
+app.use('/api', proteinRouter);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
