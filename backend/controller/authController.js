@@ -1,6 +1,7 @@
 import { User } from "../models/model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { sendWelcomeEmail } from "../utils/sendMail.js";
 
 // Clerk Auth Sync (existing logic)
 export const clerkAuth = async (req, res) => {
@@ -19,6 +20,7 @@ export const clerkAuth = async (req, res) => {
             email
         });
         await newUser.save();
+        sendWelcomeEmail(newUser.email, newUser.name);
         return res.status(200).json({ success: true, message: "User created and synced successfully", user: newUser });
     } catch (error) {
         return res.status(500).json({ success: false, message: "Server error", error: error.message });
@@ -46,6 +48,8 @@ export const register = async (req, res) => {
         });
 
         await newUser.save();
+
+        sendWelcomeEmail(newUser.email, newUser.name);
 
         // Generate JWT
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
