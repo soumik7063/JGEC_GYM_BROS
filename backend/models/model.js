@@ -59,8 +59,25 @@ const userSchema = new mongoose.Schema({
     }],
     time: {
         type: String,
+    },
+    consistencyScore: {
+        type: Number,
+        default: 0
+    },
+    rank: {
+        type: String,
+        default: 'Bronze'
+    },
+    streak: {
+        type: Number,
+        default: 0
+    },
+    lastWorkoutDate: {
+        type: String,
+        default: ''
     }
 }, {
+
     timestamps: true
 })
 

@@ -27,7 +27,24 @@ const workoutController = async (req, res) => {
     }
     else {
       user.workouts.push({ date, exercise: exercises });
+      
+      const today = new Date().toISOString().split('T')[0];
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+      
+      if (user.lastWorkoutDate === yesterday) {
+          user.streak += 1;
+      } else if (user.lastWorkoutDate !== today) {
+          user.streak = 1;
+      }
+      user.lastWorkoutDate = today;
     }
+
+    // Recalculate score (rough estimation until cron update)
+    const streak = user.streak || 0;
+    const totalWorkouts = user.workouts.length || 0;
+    const variety = new Set(user.workouts.flatMap(w => w.exercise)).size || 0;
+    user.consistencyScore = (streak * 10) + (totalWorkouts * 5) + (variety * 2);
+
     user.markModified('totalWorkouts');
     await user.save();
     return res.status(200).json({ success: true, message: "Workout added successfully", user });
@@ -35,5 +52,6 @@ const workoutController = async (req, res) => {
     return res.status(500).json({ success: false, message: "Server error", error: error.message });
   }
 };
+
 
 export default workoutController;
