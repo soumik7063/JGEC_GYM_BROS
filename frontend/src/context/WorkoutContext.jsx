@@ -80,8 +80,11 @@ const WorkoutContext = ({ children }) => {
           userId,
           date,
           exercises,
+          userName: activeUser?.firstName || activeUser?.name || "Gym Bro",
+          userImage: activeUser?.imageUrl || ""
         }),
       });
+
       const payload = await response.json();
 
       if (!payload.success) {

@@ -23,7 +23,8 @@ const WeightTracker = () => {
   const fetchWeightHistory = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/weight/history`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/weight/history`, {
+
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id })
@@ -46,7 +47,8 @@ const WeightTracker = () => {
     if (!weight || !date) return;
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/weight/add`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/weight/add`, {
+
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

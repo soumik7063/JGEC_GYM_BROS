@@ -14,7 +14,8 @@ const useAnalytics = () => {
       setLoading(true);
       setError(null);
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/workouts/stats`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/workouts/stats`, {
+
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
