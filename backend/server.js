@@ -9,6 +9,10 @@ import weight from "./routes/weight.js";
 import getWorkoutRouter from './routes/getworkout.js';
 import templateRouter from './routes/template.js';
 import proteinRouter from './routes/protein.js';
+import leaderboardRouter from './routes/leaderboard.js';
+import cron from 'node-cron';
+import { updateLeaderboard } from './services/leaderboardService.js';
+
 dotenv.config();
 
 const app = express();
@@ -36,10 +40,24 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Welcome to the Gym Web API');
 });
+app.use('/', authlogin); // Support Clerk's default /login
 app.use('/api', authlogin);
+app.use('/api', workout);
+app.use('/api/workouts/stats', analytics);
+app.use('/api/weight', weight);
 app.use('/api', getWorkoutRouter);
+
 app.use('/api', templateRouter);
 app.use('/api', proteinRouter);
+app.use('/api/leaderboard', leaderboardRouter);
+
+
+// Schedule leaderboard update at midnight every day
+cron.schedule('0 0 * * *', () => {
+  console.log('Running scheduled leaderboard update...');
+  updateLeaderboard();
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

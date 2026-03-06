@@ -37,8 +37,9 @@ const ProteinTrackerModal = ({ isOpen, onClose }) => {
   const fetchLogs = async () => {
     try {
       const BASE_URL =
-        import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-      const response = await fetch(`${BASE_URL}/api/getprotein`, {
+        import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+      const response = await fetch(`${BASE_URL}/getprotein`, {
+
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,8 +66,9 @@ const ProteinTrackerModal = ({ isOpen, onClose }) => {
 
     try {
       const BASE_URL =
-        import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-      const response = await fetch(`${BASE_URL}/api/addprotein`, {
+        import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+      const response = await fetch(`${BASE_URL}/addprotein`, {
+
         method: "POST",
         headers: {
           "Content-Type": "application/json",
