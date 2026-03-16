@@ -62,7 +62,9 @@ const Navbar = ({ setActiveView }) => {
           <div className="flex items-center gap-4 border-r border-slate-200 pr-6 dark:border-slate-700">
             <Link to="/" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Home</Link>
             <Link to="/community" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/community' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Community</Link>
+            <Link to="/leaderboard" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/leaderboard' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Leaderboard</Link>
           </div>
+
           <div className="flex items-center gap-3">
             <span className={`metric-chip ${chipClasses}`}>
               Campus Fitness Hub
