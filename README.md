@@ -18,8 +18,17 @@
 
 
 ### backend env
+```bash
 MONGO_URI=######### (create your own)
+CLIENT_URL=http://localhost:5173
 
+# Email configs
+SUPPROT_EMAIL=your_email
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=your_email
+SMTP_PASS='your_pass'
+```
 ### frontend env
 * VITE_CLERK_PUBLISHABLE_KEY=################ (create your own)
 * VITE_API_URL=http://localhost:3000
