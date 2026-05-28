@@ -8,6 +8,9 @@ import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
 import Community from "./pages/Community";
 import { useAuth } from "./context/AuthContext";
 import Profile from "./components/profile/Profile";
+import Leaderboard from "./pages/Leaderboard";
+import { useState } from 'react';
+
 
 const App = () => {
   const { manualUser } = useAuth();
@@ -27,6 +30,7 @@ const App = () => {
             <Route path='/profile' element={<Profile/>}/>
           </Routes>
       ) : (
+
         <div className="flex min-h-[80vh] flex-col items-center justify-center px-4 py-10">
           <SignIn/>
         </div>

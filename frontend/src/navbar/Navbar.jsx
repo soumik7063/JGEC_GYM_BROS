@@ -1,9 +1,8 @@
 import {
   SignInButton,
-  UserButton,
   useUser,
 } from "@clerk/clerk-react";
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -13,9 +12,23 @@ const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const { user: clerkUser, isSignedIn: isClerkSignedIn } = useUser();
   const { manualUser, logoutManual } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const location = useLocation();
+  const [isProteinModalOpen, setIsProteinModalOpen] = useState(false);
 
   const isUserAuthenticated = isClerkSignedIn || !!manualUser;
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const today = new Date().toLocaleDateString(undefined, {
     day: "2-digit",
@@ -37,6 +50,26 @@ const Navbar = () => {
     ? "border-slate-500/40 bg-slate-700/40"
     : "border-slate-300 bg-slate-100";
   const accountTextClasses = isDark ? "text-slate-200" : "text-slate-700";
+
+  const dropdownClasses = isDark
+    ? "border-slate-700 bg-slate-900 shadow-2xl shadow-black/40"
+    : "border-slate-200 bg-white shadow-2xl shadow-slate-200/60";
+  const dropdownItemClasses = isDark
+    ? "hover:bg-slate-800 text-slate-200"
+    : "hover:bg-slate-100 text-slate-700";
+
+  const displayName = manualUser?.name?.split(' ')[0] || clerkUser?.firstName || "Account";
+  const avatarLetter = (manualUser?.name?.[0] || clerkUser?.firstName?.[0] || "A").toUpperCase();
+
+  const handleLogout = () => {
+    setDropdownOpen(false);
+    logoutManual();
+  };
+
+  const handleProfile = () => {
+    setDropdownOpen(false);
+    setActiveView?.('profile');
+  };
 
   return (
     <nav className={`sticky top-0 z-50 border-b shadow-xl backdrop-blur ${navClasses}`}>
@@ -63,7 +96,9 @@ const Navbar = () => {
             <Link to="/weight-tracker" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/weight-tracker' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Weight Tracker</Link>
             <Link to="/analytics" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/analytics' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Analytics</Link>
             <Link to="/community" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/community' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Community</Link>
+            <Link to="/leaderboard" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/leaderboard' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Leaderboard</Link>
           </div>
+
           <div className="flex items-center gap-3">
             {/* <span className={`metric-chip ${chipClasses}`}>
               Campus Fitness Hub
@@ -110,13 +145,17 @@ const Navbar = () => {
             </SignInButton>
           )}
 
-          {isClerkSignedIn && (
-            <div className="flex items-center gap-2">
+          {isUserAuthenticated && (
+            <div className="flex items-center gap-3">
+              {/* Protein tracker button */}
               <button
                 onClick={() => navigate('/profile')}
                 className={`hidden md:block rounded-xl border px-4 py-1.5 text-sm font-semibold transition ${toggleButtonClasses} ${accountTextClasses}`}
               >
-                My Profile
+                <svg className="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Protein
               </button>
               <div className={`flex items-center gap-2 rounded-xl border px-3 py-1.5 ${accountClasses}`}>
                 <span className={`hidden max-w-28 truncate text-sm sm:block ${accountTextClasses}`}>
@@ -147,16 +186,23 @@ const Navbar = () => {
                   {manualUser.name[0].toUpperCase()}
                 </div>
               </div>
-              <button
-                onClick={logoutManual}
-                className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-bold text-red-500 transition hover:bg-red-500 hover:text-white"
-              >
-                Logout
-              </button>
             </div>
           )}
         </div>
       </div>
+
+      <ProteinTrackerModal
+        isOpen={isProteinModalOpen}
+        onClose={() => setIsProteinModalOpen(false)}
+      />
+
+      {/* Dropdown animation keyframes */}
+      <style>{`
+        @keyframes fadeSlideIn {
+          from { opacity: 0; transform: translateY(-6px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </nav>
   );
 };

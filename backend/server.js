@@ -4,7 +4,6 @@ import { connectDB } from './models/DB.js';
 import authlogin from './routes/authlogin.js';
 import workout from './routes/workout.js';
 import cors from 'cors';
-import getworkout from './routes/getworkout.js';
 import analytics from "./routes/analytics.js";
 import weight from "./routes/weight.js";
 import getWorkoutRouter from './routes/getworkout.js';
@@ -14,7 +13,16 @@ import workRouter from './routes/workout.js';
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:5173", "https://jgec-gym-bros.vercel.app"],
+    credentials: true
+  }
+});
+
 const PORT = process.env.PORT || 3000;
+
 connectDB();
 const allowedOrigins = [
   'http://localhost:5173',
@@ -38,9 +46,13 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Welcome to the Gym Web API');
 });
-app.use('/api', authRouter);
-app.use('/api', workRouter);
+app.use('/', authlogin); // Support Clerk's default /login
+app.use('/api', authlogin);
+app.use('/api', workout);
+app.use('/api/workouts/stats', analytics);
+app.use('/api/weight', weight);
 app.use('/api', getWorkoutRouter);
+
 app.use('/api', templateRouter);
 app.use('/api',weight);
 app.use('/api', analytics);
