@@ -6,9 +6,10 @@ import {
 import React from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Navbar = ({ setActiveView }) => {
+const Navbar = () => {
+  const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme();
   const { user: clerkUser, isSignedIn: isClerkSignedIn } = useUser();
   const { manualUser, logoutManual } = useAuth();
@@ -45,11 +46,11 @@ const Navbar = ({ setActiveView }) => {
             className="h-12 w-12 cursor-pointer rounded-xl border border-slate-300/40 object-cover shadow-lg transition hover:opacity-80"
             src="./logo.png"
             alt="Gym Bros Logo"
-            onClick={() => setActiveView?.('home')}
+            onClick={() => navigate('/')}
           />
           <div
             className="min-w-0 cursor-pointer"
-            onClick={() => setActiveView?.('home')}
+            onClick={() => navigate('/')}
           >
             <p className="text-lg font-extrabold tracking-wide transition hover:text-cyan-500">JGEC GYM BROS</p>
             <p className={`truncate text-xs ${subtextClasses}`}>Strength. Discipline. Consistency.</p>
@@ -59,12 +60,14 @@ const Navbar = ({ setActiveView }) => {
         <div className="hidden items-center gap-6 md:flex">
           <div className="flex items-center gap-4 border-r border-slate-200 pr-6 dark:border-slate-700">
             <Link to="/" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Home</Link>
+            <Link to="/weight-tracker" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/weight-tracker' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Weight Tracker</Link>
+            <Link to="/analytics" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/analytics' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Analytics</Link>
             <Link to="/community" className={`text-sm font-semibold transition hover:text-indigo-500 ${location.pathname === '/community' ? 'text-indigo-600 dark:text-indigo-400' : subtextClasses}`}>Community</Link>
           </div>
           <div className="flex items-center gap-3">
-            <span className={`metric-chip ${chipClasses}`}>
+            {/* <span className={`metric-chip ${chipClasses}`}>
               Campus Fitness Hub
-            </span>
+            </span> */}
             <span className={`metric-chip ${chipClasses}`}>
               {today}
             </span>
@@ -110,7 +113,7 @@ const Navbar = ({ setActiveView }) => {
           {isClerkSignedIn && (
             <div className="flex items-center gap-2">
               <button
-                onClick={() => setActiveView?.('profile')}
+                onClick={() => navigate('/profile')}
                 className={`hidden md:block rounded-xl border px-4 py-1.5 text-sm font-semibold transition ${toggleButtonClasses} ${accountTextClasses}`}
               >
                 My Profile
@@ -134,7 +137,7 @@ const Navbar = ({ setActiveView }) => {
             <div className="flex items-center gap-3">
               <div
                 className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-1.5 transition hover:opacity-80 ${accountClasses}`}
-                onClick={() => setActiveView?.('profile')}
+                onClick={() => navigate('/profile')}
                 title="View Profile"
               >
                 <span className={`hidden max-w-28 truncate text-sm sm:block ${accountTextClasses}`}>

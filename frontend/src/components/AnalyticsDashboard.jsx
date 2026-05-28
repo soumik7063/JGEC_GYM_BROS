@@ -29,7 +29,7 @@ const AnalyticsDashboard = () => {
   const COLORS = ['#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#06B6D4', '#F97316', '#EF4444'];
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-6 space-y-8 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="w-full max-w-7xl mx-auto p-10 space-y-8 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}

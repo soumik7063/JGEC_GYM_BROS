@@ -32,7 +32,7 @@ const Profile = () => {
     const iconBg = isDark ? "bg-slate-800 text-cyan-400" : "bg-blue-50 text-blue-600";
 
     return (
-        <div className="w-full max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500">
+        <div className="w-full max-w-5xl mx-auto space-y-10 mt-10 mb-10 animate-in fade-in duration-500">
             <div className={`p-8 rounded-3xl border ${cardClasses}`}>
                 <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
                     {/* Avatar Section */}

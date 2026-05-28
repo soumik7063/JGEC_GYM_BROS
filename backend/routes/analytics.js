@@ -3,6 +3,6 @@ import analyticsController from '../controller/analyticsController.js';
 
 const router = express.Router();
 
-router.post('/', analyticsController);
+router.post('/workouts/stats', analyticsController);
 
 export default router;

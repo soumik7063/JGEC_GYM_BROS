@@ -9,6 +9,8 @@ import analytics from "./routes/analytics.js";
 import weight from "./routes/weight.js";
 import getWorkoutRouter from './routes/getworkout.js';
 import templateRouter from './routes/template.js';
+import authRouter from './routes/authlogin.js';
+import workRouter from './routes/workout.js';
 dotenv.config();
 
 const app = express();
@@ -40,6 +42,8 @@ app.use('/api', authRouter);
 app.use('/api', workRouter);
 app.use('/api', getWorkoutRouter);
 app.use('/api', templateRouter);
+app.use('/api',weight);
+app.use('/api', analytics);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
